@@ -1,14 +1,27 @@
 <script setup lang="ts">
 import TheButton from "../components/TheButton.vue";
-import { ref } from "vue";
+import LineChart from "../components/LineChart.vue";
 
-const list = [
-  { currency: "euro", symbol: "§", key: 0 },
-  { currency: "dolar", symbol: "$", key: 1 },
-];
-const baseCurrency = ref<number>();
-const expectedCurrency = ref<number>();
+//import { ref } from "vue";
+import { useFetch } from "../composables/useFetch";
+import { onMounted, ref } from "vue";
+
+//composable
+
+const { apiFetch, convertValue } = useFetch();
+
+//reactive variables
+const baseCurrency = ref<string>();
+const targetCurrency = ref<string>();
+const amount = ref<string>();
 const text = "Convert";
+const symbols = ref();
+
+//methods
+
+onMounted(() => {
+  apiFetch("symbols").then((response) => (symbols.value = response.data));
+});
 </script>
 
 <template>
@@ -20,10 +33,13 @@ const text = "Convert";
     <div class="content-wrapper">
       <div class="inputFields">
         <div class="base-currency">
-          <input v-model="baseCurrency" type="number" />
-          <select>
-            <option v-for="item in list" :key="item.key">
-              {{ item.symbol }}
+          <select v-model="baseCurrency" type="string">
+            <option
+              v-for="(item, index) in symbols"
+              :key="index"
+              :value="index"
+            >
+              {{ item }}
             </option>
           </select>
         </div>
@@ -33,21 +49,37 @@ const text = "Convert";
           class="arrows"
         />
         <div class="expected-currency">
-          <input v-model="expectedCurrency" type="number" />
-          <select>
-            <option v-for="item in list" :key="item.key">
-              {{ item.symbol }}
+          <select v-model="targetCurrency" type="string">
+            <option
+              v-for="(item, index) in symbols"
+              :key="index"
+              :value="index"
+            >
+              {{ item }}
             </option>
           </select>
         </div>
       </div>
-      <div class="transform">
-        <TheButton :text="text" />
-      </div>
-      <div class="result">
-        <h6>532853259 §</h6>
+      <div class="convert">
+        <input
+          class="value"
+          v-model="amount"
+          type="number"
+          placeholder="How Much?"
+        />
+        <div class="transform">
+          <TheButton
+            type="submit"
+            :text="text"
+            @click="convertValue(baseCurrency, targetCurrency, amount)"
+          />
+        </div>
+        <div class="result">
+          <h6>{{ convertedValue }}</h6>
+        </div>
       </div>
     </div>
+    <LineChart />
   </div>
 </template>
 
@@ -58,6 +90,16 @@ const text = "Convert";
   display: grid;
   grid-template-columns: 2rem repeat(10, 4rem) auto 2rem;
   grid-template-rows: 1rem 2rem repeat(8, 6rem) auto 1rem;
+}
+.convert {
+  grid-column: 2/4;
+  grid-row: 5/7;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
 }
 
 .header h4 {
@@ -75,27 +117,12 @@ const text = "Convert";
   z-index: -1;
 }
 
-input {
-  width: 3rem;
-  height: 2rem;
-  border-radius: 10%;
-  border: none;
-  margin: 0;
-  align-self: center;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-right-color: #181818;
-  background-color: #d9d9d9;
-}
-
 select {
-  width: 3rem;
+  max-width: 4.5rem;
   height: 2rem;
   border-radius: 10%;
   border: none;
   margin: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
   align-self: center;
   color: #616f2a;
   background-color: #d9d9d9;
@@ -115,9 +142,6 @@ select {
 .expected-currency {
   display: flex;
   flex-direction: row;
-  width: 73.35px;
-  height: 43px;
-  align-items: center;
 }
 
 .arrows {
@@ -126,25 +150,17 @@ select {
   align-self: center;
 }
 
-.transform {
-  grid-column: 2/4;
-  grid-row: 5;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-}
-
-.transform button {
-  margin: 1rem;
-}
-
 .result {
-  grid-column: 2/4;
-  grid-row: 6;
-  height: 36.35px;
+  background-color: #d9d9d9;
+}
+
+.result,
+.transform,
+.value {
+  max-width: 5rem;
+  height: 2rem;
   border-radius: 10px;
   font-family: "spectral", "roboto";
-  background-color: #d9d9d9;
   display: flex;
   justify-content: center;
 }
@@ -160,17 +176,19 @@ select {
 }
 
 @media (min-width: 900px) {
+  #app {
+    display: flex;
+  }
   .layout {
     display: flex;
     flex-direction: row-reverse;
+    flex-grow: 1;
+    flex-basis: 50%;
   }
-  .map {
-    grid-column: 8;
-    grid-row: 3;
-  }
-  .header {
-    flex-direction: column;
+  .header,
+  .content-wrapper {
     display: flex;
+    flex-direction: column;
   }
   .header h4 {
     text-align: center;
@@ -184,11 +202,24 @@ select {
   .result {
     align-self: center;
   }
-  .content-wrapper {
+  .content-wrapper,
+  .convert {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 2rem;
     width: 100%;
+  }
+  .arrows {
+    width: 2rem;
+    height: 2rem;
+  }
+  input,
+  select,
+  .result,
+  .transform {
+    max-width: 4.5rem;
+    min-width: 1.5rem;
   }
 }
 </style>

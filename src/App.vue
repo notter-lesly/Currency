@@ -58,6 +58,12 @@ body {
   min-height: 100vh;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 @media (min-width: 900px) {
   #app {
     grid-template-columns: 2rem auto;
