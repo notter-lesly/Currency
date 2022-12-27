@@ -23,12 +23,12 @@ async function convertValue( baseCurrency, targetCurrency, amount){
       }
     })
     const convertedValue = data
-    return convertedValue
+    function getValue(convertedValue)
   }
 
 
     return {
       apiFetch,
-      convertValue
+      convertValue,
     }
 }

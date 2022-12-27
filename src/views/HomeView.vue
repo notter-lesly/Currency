@@ -16,12 +16,19 @@ const targetCurrency = ref<string>();
 const amount = ref<string>();
 const text = "Convert";
 const symbols = ref();
+const result = ref();
+const chartValue = ref();
 
 //methods
 
 onMounted(() => {
   apiFetch("symbols").then((response) => (symbols.value = response.data));
 });
+
+function getValue(response: number) {
+  result.value = response;
+  return result;
+}
 </script>
 
 <template>
@@ -30,7 +37,7 @@ onMounted(() => {
       <h4>Convert anything</h4>
       <img class="map" src="../assets/images/map.jpg" alt="world map" />
     </div>
-    <div class="content-wrapper">
+    <form class="content-wrapper">
       <div class="inputFields">
         <div class="base-currency">
           <select v-model="baseCurrency" type="string">
@@ -74,32 +81,34 @@ onMounted(() => {
             @click="convertValue(baseCurrency, targetCurrency, amount)"
           />
         </div>
-        <div class="result">
-          <h6>{{ convertedValue }}</h6>
-        </div>
       </div>
-    </div>
-    <LineChart />
+      <div class="result">
+        <h6>{{ result }}</h6>
+      </div>
+    </form>
+    <LineChart :chartValue="chartValue" />
   </div>
 </template>
 
-<style>
-.layout,
-.header,
-.content-wrapper {
+<style scoped>
+.layout {
   display: grid;
   grid-template-columns: 2rem repeat(10, 4rem) auto 2rem;
-  grid-template-rows: 1rem 2rem repeat(8, 6rem) auto 1rem;
+  grid-template-rows: 1rem 2rem repeat(12, 6rem) auto;
 }
-.convert {
+
+.content-wrapper {
+  grid-row: 4;
   grid-column: 2/4;
-  grid-row: 5/7;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center;
-  margin: 1rem 0;
+  gap: 2rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 2rem 7rem 5rem auto;
+  grid-template-rows: 1rem 2rem auto;
 }
 
 .header h4 {
@@ -111,14 +120,24 @@ onMounted(() => {
 }
 
 .map {
-  grid-column: 4;
+  grid-column: 3/7;
+  grid-row: 2/7;
   object-fit: cover;
-  height: 120vh;
+  max-height: 50%;
   z-index: -1;
+}
+
+.convert {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
 }
 
 select {
   max-width: 4.5rem;
+  min-width: 2.5rem;
   height: 2rem;
   border-radius: 10%;
   border: none;
@@ -129,19 +148,10 @@ select {
 }
 
 .inputFields {
-  grid-row: 4;
   text-align: center;
   font-family: "spectral", "roboto";
   display: flex;
   gap: 1rem;
-  flex-direction: row;
-  align-items: center;
-}
-
-.base-currency,
-.expected-currency {
-  display: flex;
-  flex-direction: row;
 }
 
 .arrows {
@@ -150,48 +160,65 @@ select {
   align-self: center;
 }
 
-.result {
-  background-color: #d9d9d9;
-}
-
 .result,
 .transform,
 .value {
   max-width: 5rem;
-  height: 2rem;
+  min-width: 2.5rem;
+  min-height: 2rem;
   border-radius: 10px;
   font-family: "spectral", "roboto";
   display: flex;
   justify-content: center;
 }
 
-.result h6 {
+.result {
+  content: "";
+  background-color: #d9d9d9;
   align-self: center;
+}
+
+#chart {
+  grid-column: 1/7;
+  grid-row: 7;
+  padding: 1rem;
 }
 
 @media (min-width: 600px) {
   .map {
-    grid-column: 6;
+    max-height: 80%;
+  }
+  #chart {
+    grid-column: 2/14;
+    grid-row: 10;
+    margin-right: 1rem;
   }
 }
 
 @media (min-width: 900px) {
-  #app {
-    display: flex;
-  }
   .layout {
-    display: flex;
+    display: grid;
     flex-direction: row-reverse;
-    flex-grow: 1;
-    flex-basis: 50%;
+    grid-template-columns: 2% 48% 50%;
+    grid-template-rows: 10% 40% auto;
   }
-  .header,
+  .header {
+    grid-column: 3;
+  }
   .content-wrapper {
+    grid-column: 2;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
   }
+  .map {
+    grid-column: 1/-1;
+    grid-row: 3;
+    width: 100%;
+  }
   .header h4 {
-    text-align: center;
+    grid-row: 2;
+    grid-column: 1/-1;
   }
   .inputFields {
     align-self: center;
@@ -204,10 +231,7 @@ select {
   }
   .content-wrapper,
   .convert {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    gap: 2rem;
     width: 100%;
   }
   .arrows {
@@ -219,7 +243,15 @@ select {
   .result,
   .transform {
     max-width: 4.5rem;
-    min-width: 1.5rem;
+    min-width: 2.5rem;
+  }
+
+  #chart {
+    grid-column: 2/-1;
+    grid-row: 3;
+    margin: 0;
   }
 }
+
+/* For general iPad layouts */
 </style>
