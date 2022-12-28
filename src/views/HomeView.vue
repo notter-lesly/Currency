@@ -81,6 +81,7 @@ watch(errorDiv, async () => {
             ref="base"
             required
             title="choose your base currency"
+            :disabled="!symbols"
             @change="errorMessage = false"
           >
             <option
@@ -93,11 +94,7 @@ watch(errorDiv, async () => {
             </option>
           </select>
         </div>
-        <img
-          src="../assets/images/arrowsMobile.svg"
-          alt="double arrows"
-          class="arrows"
-        />
+        <img src="../assets/images/arrow.svg" alt="arrow" class="arrow" />
         <div class="expected-currency">
           <select
             v-model="targetCurrency"
@@ -105,6 +102,7 @@ watch(errorDiv, async () => {
             ref="target"
             required
             title="choose your target currency"
+            :disabled="!symbols"
             @change="errorMessage = false"
           >
             <option
@@ -254,9 +252,8 @@ input:hover {
   background-color: #31423a;
 }
 
-.arrows {
-  width: 1rem;
-  height: 1rem;
+.arrow {
+  width: 2rem;
   align-self: center;
 }
 
@@ -382,11 +379,6 @@ input:hover {
   .convert {
     justify-content: center;
     width: 100%;
-  }
-
-  .arrows {
-    width: 2rem;
-    height: 2rem;
   }
 
   input,

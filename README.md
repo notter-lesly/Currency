@@ -33,6 +33,7 @@ Express - I choose express to run the server locally.
 2. I would create a more complex and nice design to the page.
 3. I would create more views/pages and for that I would probably use nuxt3 since as it simplify routes and configuration.
 4. With a larger application with view and pages, I could create a header with links, a footer with some information and a sitemap.
+5. I would search another library with a more adaptable graphic to use it on a mobile.
 
 
 ### Type-Check, Compile and Minify for Production
