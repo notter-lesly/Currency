@@ -1,12 +1,7 @@
-<script setup lang="ts">
-interface ButtonProps {
-  text: string;
-}
-const props = defineProps<ButtonProps>();
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <button>{{ text }}</button>
+  <button>Convert</button>
 </template>
 
 <style scoped>

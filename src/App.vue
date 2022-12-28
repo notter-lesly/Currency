@@ -7,17 +7,27 @@ import { RouterView } from "vue-router";
 </template>
 
 <style>
+/*font face imports*/
 /*spectral*/
 @import url("https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,800&display=swap");
+
+/*Libre Caslon*/
+
+@import url("https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&display=swap");
 
 /*Karla*/
 @import url("https://fonts.googleapis.com/css2?family=Karla:wght@700&display=swap");
 
+/*Work-sans*/
+
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans&display=swap");
+
 /*Roboto*/
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,300&display=swap");
+
+/*reset*/
 html {
   box-sizing: border-box;
-  font-size: 16px;
   overflow-x: hidden;
 }
 *,
@@ -55,19 +65,13 @@ body {
 
 #app {
   overflow-x: hidden;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-@media (min-width: 900px) {
-  #app {
-    grid-template-columns: 2rem auto;
-    grid-template-rows: 1rem 2rem auto;
-  }
 }
 </style>
